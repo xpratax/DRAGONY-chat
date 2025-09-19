@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>H$KASS - Login</title>
+<style>
+body {
+    margin:0;
+    font-family: monospace;
+    background:#000;
+    color:#0ff;
+    text-align:center;
+}
+h1 {
+    font-size: 60px;
+    background: linear-gradient(90deg, cyan, magenta, pink, yellow);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-top:20px;
+}
+img.logo {
+    max-width: 150px;
+    margin: 10px 0 20px 0;
+    border: 2px solid #0ff;
+    border-radius: 10px;
+}
+#loginDiv {
+    width:90%;
+    max-width:400px;
+    margin:auto;
+}
+input, button {
+    padding:10px;
+    margin:5px;
+    width: calc(100% - 24px);
+    border: 1px solid #0ff;
+    background: #000;
+    color: #0ff;
+    font-weight:bold;
+    font-size:16px;
+}
+button:hover {
+    background:#0ff;
+    color:#000;
+    cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<h1>H$KASS</h1>
+<img class="logo" src="https://i.postimg.cc/xkSmd25W/h.png" alt="Logo H$KASS"/>
+
+<div id="loginDiv">
+    <input type="text" id="username" placeholder="Nome de usuário">
+    <input type="password" id="password" placeholder="Senha (8689 para moderador)">
+    <button onclick="login()">Entrar</button>
+</div>
+
+<script>
+async function login(){
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    if(!username){ alert("Digite um nome de usuário"); return; }
+
+    try{
+        const res = await fetch('/api/login', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+
+        // redireciona para o chat com dados do usuário
+        if(data.username){
+            localStorage.setItem('HskassUser', JSON.stringify(data));
+            window.location.href = "chat.html";
+        }
+    } catch(err){ console.error(err); }
+}
+</script>
+</body>
+</html>
