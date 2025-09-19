@@ -4,16 +4,67 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>H$KASS</title>
-<link rel="stylesheet" href="styles.css">
+<style>
+body {
+    margin:0;
+    font-family: monospace;
+    background:#000;
+    color:#0ff;
+    text-align:center;
+}
+h1 {
+    font-size: 60px;
+    background: linear-gradient(90deg, cyan, magenta, pink, yellow);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-top:20px;
+}
+img.logo {
+    max-width: 150px;
+    margin: 10px 0 20px 0;
+    border: 2px solid #0ff;
+    border-radius: 10px;
+}
+#loginDiv, #chatDiv {
+    width:90%;
+    max-width:400px;
+    margin:auto;
+}
+input, button {
+    padding:10px;
+    margin:5px;
+    width: calc(100% - 24px);
+    border: 1px solid #0ff;
+    background: #000;
+    color: #0ff;
+    font-weight:bold;
+    font-size:16px;
+}
+button:hover {
+    background:#0ff;
+    color:#000;
+    cursor:pointer;
+}
+#chat-container {
+    background:#111;
+    border:1px solid #0ff;
+    height:400px;
+    overflow-y:auto;
+    padding:10px;
+    margin-top:10px;
+    text-align:left;
+}
+</style>
 </head>
 <body>
-<h1>H$KASS</h1>
-<img class="logo" src="public/logo.png" alt="Logo H$KASS"/>
 
-<!-- Login simples -->
+<h1>H$KASS</h1>
+<img class="logo" src="https://i.postimg.cc/xkSmd25W/h.png" alt="Logo H$KASS"/>
+
+<!-- Login -->
 <div id="loginDiv">
     <input type="text" id="username" placeholder="Nome de usuário">
-    <input type="password" id="password" placeholder="Senha (opcional)">
+    <input type="password" id="password" placeholder="Senha (8689 para moderador)">
     <button onclick="login()">Entrar</button>
 </div>
 
@@ -28,6 +79,7 @@
 let currentUser = null;
 const chatContainer = document.getElementById('chat-container');
 
+// Login local
 async function login(){
     const username = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value.trim();
@@ -43,12 +95,12 @@ async function login(){
         currentUser = data;
         alert(`Logado como ${data.username} ${data.isMod ? '(Moderador)' : ''}`);
 
-        // esconde login, mostra chat
         document.getElementById('loginDiv').style.display='none';
         document.getElementById('chatDiv').style.display='block';
     } catch(err){ console.error(err); }
 }
 
+// Envio de mensagens
 async function sendMessage(){
     if(!currentUser){ alert("Faça login primeiro"); return; }
 
@@ -68,6 +120,7 @@ async function sendMessage(){
     input.value='';
 }
 
+// Exibe mensagens
 function displayMessages(msgs){
     chatContainer.innerHTML = '';
     msgs.forEach(m=>{
@@ -78,7 +131,7 @@ function displayMessages(msgs){
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-// Atualiza mensagens a cada 2s
+// Atualiza chat a cada 2s
 setInterval(async ()=>{
     try{
         const res = await fetch('/api/chat');
@@ -87,5 +140,6 @@ setInterval(async ()=>{
     } catch(err){ console.error(err); }
 },2000);
 </script>
+
 </body>
 </html>
